@@ -1,27 +1,974 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Never-Ending Progress Bars</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>40 Different Loaders (All Centered)</title>
+  <style>
+    /* Basic page / grid styling */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #222;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .loader-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 20px;
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+      justify-items: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .loader {
+      width: 64px;
+      height: 64px;
+      position: relative;
+    }
+
+    /************************************************************************
+     *  1) Rotating circle with 8 dots (similar to Windows 10 spinner)
+     ************************************************************************/
+    .loader-l1 span {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 12px; height: 12px;
+      margin: -6px 0 0 -6px;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: l1-fade 1s linear infinite;
+    }
+    .loader-l1 span:nth-child(1)  { transform: rotate(0deg)   translate(24px);  animation-delay: 0s; }
+    .loader-l1 span:nth-child(2)  { transform: rotate(45deg)  translate(24px);  animation-delay: 0.125s; }
+    .loader-l1 span:nth-child(3)  { transform: rotate(90deg)  translate(24px);  animation-delay: 0.25s; }
+    .loader-l1 span:nth-child(4)  { transform: rotate(135deg) translate(24px);  animation-delay: 0.375s; }
+    .loader-l1 span:nth-child(5)  { transform: rotate(180deg) translate(24px);  animation-delay: 0.5s; }
+    .loader-l1 span:nth-child(6)  { transform: rotate(225deg) translate(24px);  animation-delay: 0.625s; }
+    .loader-l1 span:nth-child(7)  { transform: rotate(270deg) translate(24px);  animation-delay: 0.75s; }
+    .loader-l1 span:nth-child(8)  { transform: rotate(315deg) translate(24px);  animation-delay: 0.875s; }
+    @keyframes l1-fade {
+      0%   { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    /************************************************************************
+     *  2) Simple rotating ring (border-top spinner, iOS-like)
+     ************************************************************************/
+    .loader-l2 {
+  width: 64px;                 /* or 100% if the parent is 64×64 */
+  height: 64px;
+  box-sizing: border-box;      /* so border is included inside 64×64 */
+  border: 8px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+
+    /************************************************************************
+     *  3) Rainbow spinner (macOS-like, rotating conic gradient)
+     ************************************************************************/
+    .loader-l3 {
+      border-radius: 50%;
+      background: conic-gradient(red, orange, yellow, green, cyan, blue, purple, red);
+      animation: l3-spin 1s linear infinite;
+    }
+    @keyframes l3-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /************************************************************************
+     *  4) Marquee bar (old Windows XP style) - position: relative to center it
+     ************************************************************************/
+    .loader-l4 {
+      position: relative;
+      width: 80px;
+      height: 10px;
+      background: #666;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .loader-l4::after {
+      content: "";
+      position: absolute;
+      left: -40px;
+      width: 40px;
+      height: 10px;
+      background: linear-gradient(to right, #0af, #09f);
+      border-radius: 5px;
+      animation: l4-marquee 1s linear infinite;
+    }
+    @keyframes l4-marquee {
+      0% { left: -40px; }
+      100% { left: 100%; }
+    }
+
+    /************************************************************************
+     *  5) Three bouncing dots
+     ************************************************************************/
+    .loader-l5 {
+      width: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 6px;
+      height: 20px;
+    }
+    .loader-l5 span {
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      animation: l5-bounce 0.6s infinite alternate;
+    }
+    .loader-l5 span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-l5 span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes l5-bounce {
+      to { transform: translateY(-10px); }
+    }
+
+    /************************************************************************
+     *  6) Pulsating dot
+     ************************************************************************/
+    .loader-l6 {
+      background: #fff;
+      border-radius: 50%;
+      animation: l6-pulse 1s infinite alternate;
+    }
+    @keyframes l6-pulse {
+      0% { transform: scale(0.6); opacity: 0.7; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    /************************************************************************
+     *  7) Rotating double arc (Android-like spinner)
+     ************************************************************************/
+    .loader-l7,
+    .loader-l7::before {
+      border: 6px solid transparent;
+      border-radius: 50%;
+    }
+    .loader-l7 {
+      border-top-color: #0ff;
+      width: 48px; height: 48px;
+      animation: l7-rotate 1s linear infinite;
+    }
+    .loader-l7::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      border-bottom-color: #0ff;
+      animation: l7-rotate 1s linear infinite reverse;
+    }
+    @keyframes l7-rotate {
+      to { transform: rotate(360deg); }
+    }
+
+    /************************************************************************
+     *  8) Rotating square
+     ************************************************************************/
+    .loader-l8 {
+      background: #fff;
+      animation: l8-rotate 1s infinite linear;
+    }
+    @keyframes l8-rotate {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /************************************************************************
+     *  9) Two rotating balls
+     ************************************************************************/
+    .loader-l9 span {
+      position: absolute;
+      display: block;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #0ff;
+      animation: l9-rotate 1s linear infinite;
+    }
+    .loader-l9 span:nth-child(1) {
+      background: #0ff;
+    }
+    .loader-l9 span:nth-child(2) {
+      background: #fff;
+      animation-direction: reverse;
+    }
+    @keyframes l9-rotate {
+      0%   { transform: rotate(0deg)   translateX(20px); }
+      100% { transform: rotate(360deg) translateX(20px); }
+    }
+
+    /************************************************************************
+     * 10) Four-line spinner (lines rotate around center)
+     ************************************************************************/
+    .loader-l10 span {
+      position: absolute;
+      width: 4px; height: 12px;
+      background: #fff;
+      top: 26px; left: 30px;
+      transform-origin: center -6px;
+      animation: l10-rotate 1s linear infinite;
+    }
+    .loader-l10 span:nth-child(1) { transform: rotate(0deg);   animation-delay: 0s; }
+    .loader-l10 span:nth-child(2) { transform: rotate(90deg);  animation-delay: 0.25s; }
+    .loader-l10 span:nth-child(3) { transform: rotate(180deg); animation-delay: 0.5s; }
+    .loader-l10 span:nth-child(4) { transform: rotate(270deg); animation-delay: 0.75s; }
+    @keyframes l10-rotate {
+      0%   { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+
+    /************************************************************************
+     * 11) Wave / equalizer bars
+     ************************************************************************/
+    .loader-l11 {
+      width: auto;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 100%;
+    }
+    .loader-l11 span {
+      width: 4px;
+      background: #fff;
+      animation: l11-wave 1s infinite ease-in-out;
+    }
+    .loader-l11 span:nth-child(1) { height: 16px; animation-delay: 0s;   }
+    .loader-l11 span:nth-child(2) { height: 28px; animation-delay: 0.2s; }
+    .loader-l11 span:nth-child(3) { height: 20px; animation-delay: 0.4s; }
+    .loader-l11 span:nth-child(4) { height: 12px; animation-delay: 0.6s; }
+    .loader-l11 span:nth-child(5) { height: 24px; animation-delay: 0.8s; }
+    @keyframes l11-wave {
+      0%, 100% { transform: scaleY(1); }
+      50%      { transform: scaleY(2); }
+    }
+
+    /************************************************************************
+     * 12) Pulsing ring (scales up/down)
+     ************************************************************************/
+    .loader-l12 {
+      border: 4px solid #fff;
+      border-radius: 50%;
+      animation: l12-pulse 1s infinite alternate ease-in-out;
+    }
+    @keyframes l12-pulse {
+      0%   { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(1);   opacity: 0.3; }
+    }
+
+    /************************************************************************
+     * 13) Flipping square
+     ************************************************************************/
+    .loader-l13 {
+      background: #0af;
+      animation: l13-flip 1.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+    }
+    @keyframes l13-flip {
+      0%   { transform: perspective(120px) rotateX(0deg) rotateY(0deg); }
+      50%  { transform: perspective(120px) rotateX(-180deg) rotateY(0deg); }
+      100% { transform: perspective(120px) rotateX(-180deg) rotateY(-180deg); }
+    }
+
+    /************************************************************************
+     * 14) Dual rotating ring
+     ************************************************************************/
+    .loader-l14,
+    .loader-l14::before {
+      border: 6px solid #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+    }
+    .loader-l14 {
+      border-right-color: transparent;
+      animation: l14-spin 1s linear infinite;
+    }
+    .loader-l14::before {
+      content: "";
+      border-bottom-color: transparent;
+      animation: l14-spin 1s linear infinite reverse;
+    }
+    @keyframes l14-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /************************************************************************
+     * 15) Single bar filling and emptying
+     ************************************************************************/
+    .loader-l15 {
+      width: 64px;
+      height: 16px;
+      background: #444;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .loader-l15::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      bottom: 0; width: 0;
+      background: #0f0;
+      animation: l15-fill 1.5s infinite ease-in-out;
+    }
+    @keyframes l15-fill {
+      0%   { width: 0; }
+      50%  { width: 100%; }
+      100% { width: 0; }
+    }
+
+    /************************************************************************
+     * 16) Radar-like scanning circle
+     ************************************************************************/
+    .loader-l16 {
+      border: 4px solid rgba(0,255,0,0.2);
+      border-radius: 50%;
+      position: relative;
+      animation: l16-rotate 2s linear infinite;
+    }
+    .loader-l16::after {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: conic-gradient(from 90deg, rgba(0,255,0,0.3) 0deg, rgba(0,255,0,0) 120deg);
+      border-radius: 50%;
+    }
+    @keyframes l16-rotate {
+      to { transform: rotate(360deg); }
+    }
+
+    /************************************************************************
+     * 17) Rotating triangle
+     ************************************************************************/
+    .loader-l17 {
+      width: 0; height: 0;
+      border-left: 32px solid transparent;
+      border-right: 32px solid transparent;
+      border-bottom: 64px solid #ff0;
+      animation: l17-spin 1s linear infinite;
+    }
+    @keyframes l17-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /************************************************************************
+     * 18) 3D rotating cube
+     ************************************************************************/
+    .loader-l18 {
+      transform-style: preserve-3d;
+      animation: l18-rotate 1.5s infinite linear;
+      background: #f0f; /* partial edges visible from transform */
+    }
+    .loader-l18::before {
+      content: "";
+      position: absolute;
+      width: 100%; height: 100%;
+      background: #0af;
+      transform: rotateY(90deg);
+    }
+    @keyframes l18-rotate {
+      0%   { transform: rotateX(0deg) rotateY(0deg); }
+      100% { transform: rotateX(360deg) rotateY(360deg); }
+    }
+
+    /************************************************************************
+     * 19) Expanding squares
+     ************************************************************************/
+    .loader-l19 {
+      display: flex;
+      flex-wrap: wrap;
+      width: 64px; height: 64px;
+      justify-content: space-between;
+      align-content: space-between;
+    }
+    .loader-l19 span {
+      width: 28px; height: 28px;
+      background: #fff;
+      animation: l19-scale 1s infinite alternate ease-in-out;
+    }
+    .loader-l19 span:nth-child(2) { animation-delay: 0.1s; }
+    .loader-l19 span:nth-child(3) { animation-delay: 0.2s; }
+    .loader-l19 span:nth-child(4) { animation-delay: 0.3s; }
+    @keyframes l19-scale {
+      0%   { transform: scale(1);   opacity: 1; }
+      100% { transform: scale(0.6); opacity: 0.5; }
+    }
+
+    /************************************************************************
+     * 20) Four blinking dots in a row
+     ************************************************************************/
+    .loader-l20 {
+      width: auto;
+      display: inline-flex;
+      gap: 8px;
+    }
+    .loader-l20 span {
+      display: block;
+      width: 8px; height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      animation: l20-blink 1.2s infinite;
+      opacity: 0;
+    }
+    .loader-l20 span:nth-child(1) { animation-delay: 0s;   }
+    .loader-l20 span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-l20 span:nth-child(3) { animation-delay: 0.4s; }
+    .loader-l20 span:nth-child(4) { animation-delay: 0.6s; }
+    @keyframes l20-blink {
+      0%   { opacity: 0; }
+      50%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /************************************************************************
+     * 21) “Heartbeat” 2-sphere bounce
+     ************************************************************************/
+    .loader-l21 span {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #f66;
+      animation: l21-heart 0.8s ease-in-out infinite alternate;
+    }
+    .loader-l21 span:nth-child(1) {
+      margin: -7px 0 0 -7px;
+    }
+    .loader-l21 span:nth-child(2) {
+      margin: -7px 0 0 -7px;
+      animation-delay: 0.4s;
+      background: #ff0;
+    }
+    @keyframes l21-heart {
+      0%   { transform: scale(1) translateY(0); }
+      100% { transform: scale(1.4) translateY(-6px); }
+    }
+
+    /************************************************************************
+     * 22) Flickering neon circle
+     ************************************************************************/
+    .loader-l22 {
+      border: 4px solid rgba(0,255,255,0.5);
+      border-radius: 50%;
+      animation: l22-flicker 1.5s infinite steps(8);
+    }
+    @keyframes l22-flicker {
+      0%, 100% { opacity: 0.2; }
+      10%,70%  { opacity: 1; }
+      20%,80%  { opacity: 0.4; }
+      50%      { opacity: 0.7; }
+    }
+
+    /************************************************************************
+     * 23) Clockwise “dot swish”
+     ************************************************************************/
+    .loader-l23 span {
+      position: absolute;
+      width: 10px; height: 10px;
+      background: #0f0;
+      border-radius: 50%;
+      top: 27px; left: 27px;
+      animation: l23-rotate 1s linear infinite;
+    }
+    .loader-l23 span:nth-child(1) { animation-delay: 0s; }
+    .loader-l23 span:nth-child(2) { animation-delay: 0.25s; }
+    .loader-l23 span:nth-child(3) { animation-delay: 0.5s; }
+    .loader-l23 span:nth-child(4) { animation-delay: 0.75s; }
+    @keyframes l23-rotate {
+      0%   { transform: rotate(0deg)   translateX(24px); opacity: 1; }
+      50%  { opacity: 0.5; }
+      100% { transform: rotate(360deg) translateX(24px); opacity: 1; }
+    }
+
+    /************************************************************************
+     * 24) Skewing bar
+     ************************************************************************/
+    .loader-l24 {
+      width: 40px; height: 8px;
+      background: #fff;
+      animation: l24-skew 0.8s infinite alternate ease-in-out;
+    }
+    @keyframes l24-skew {
+      0%   { transform: skewX(0deg); }
+      100% { transform: skewX(45deg); }
+    }
+
+    /************************************************************************
+     * 25) Spinning border dash
+     ************************************************************************/
+    .loader-l25 {
+      width: 48px; height: 48px;
+      border: 6px dashed #fff;
+      border-radius: 50%;
+      animation: l25-spin 1s linear infinite;
+    }
+    @keyframes l25-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /************************************************************************
+     * 26) Loading bar with diagonal stripes
+     ************************************************************************/
+    .loader-l26 {
+      position: relative;
+      width: 64px; height: 16px;
+      background: #333;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    .loader-l26::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 100%;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0,255,255,0.4) 0,
+        rgba(0,255,255,0.4) 8px,
+        transparent 8px,
+        transparent 16px
+      );
+      animation: l26-move 1s linear infinite;
+    }
+    @keyframes l26-move {
+      0%   { background-position: 0 0; }
+      100% { background-position: 16px 0; }
+    }
+
+    /************************************************************************
+     * 27) Spinner with radial bars
+     ************************************************************************/
+    .loader-l27 span {
+      position: absolute;
+      top: 28px; left: 28px;
+      width: 8px; height: 16px;
+      background: #f0f;
+      transform-origin: center -8px;
+      animation: l27-fade 1s linear infinite;
+    }
+    .loader-l27 span:nth-child(1)  { transform: rotate(0deg);   animation-delay: 0s;   }
+    .loader-l27 span:nth-child(2)  { transform: rotate(30deg);  animation-delay: 0.083s;}
+    .loader-l27 span:nth-child(3)  { transform: rotate(60deg);  animation-delay: 0.167s;}
+    .loader-l27 span:nth-child(4)  { transform: rotate(90deg);  animation-delay: 0.25s; }
+    .loader-l27 span:nth-child(5)  { transform: rotate(120deg); animation-delay: 0.333s;}
+    .loader-l27 span:nth-child(6)  { transform: rotate(150deg); animation-delay: 0.417s;}
+    .loader-l27 span:nth-child(7)  { transform: rotate(180deg); animation-delay: 0.5s;  }
+    .loader-l27 span:nth-child(8)  { transform: rotate(210deg); animation-delay: 0.583s;}
+    .loader-l27 span:nth-child(9)  { transform: rotate(240deg); animation-delay: 0.667s;}
+    .loader-l27 span:nth-child(10) { transform: rotate(270deg); animation-delay: 0.75s; }
+    .loader-l27 span:nth-child(11) { transform: rotate(300deg); animation-delay: 0.833s;}
+    .loader-l27 span:nth-child(12) { transform: rotate(330deg); animation-delay: 0.917s;}
+    @keyframes l27-fade {
+      0%   { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+
+    /************************************************************************
+     * 28) Zooming chevron
+     ************************************************************************/
+    .loader-l28 {
+      width: 64px; height: 64px;
+    }
+    .loader-l28::before {
+      content: "";
+      position: absolute;
+      top: 22px; left: 22px;
+      width: 20px; height: 20px;
+      border-right: 6px solid #fff;
+      border-bottom: 6px solid #fff;
+      transform: rotate(45deg);
+      animation: l28-zoom 0.8s infinite alternate ease-in-out;
+    }
+    @keyframes l28-zoom {
+      0%   { transform: rotate(45deg) scale(1); }
+      100% { transform: rotate(45deg) scale(1.5); }
+    }
+
+    /************************************************************************
+     * 29) Swinging pendulum
+     ************************************************************************/
+    .loader-l29 {
+      width: 2px; height: 40px;
+      background: #fff;
+      transform-origin: top center;
+      animation: l29-swing 1s ease-in-out infinite alternate;
+    }
+    @keyframes l29-swing {
+      0%   { transform: rotate(-30deg); }
+      100% { transform: rotate(30deg); }
+    }
+
+    /************************************************************************
+     * 30) Rolling circle (sideways translation + rotation)
+     ************************************************************************/
+    .loader-l30 {
+      border-radius: 50%;
+      background: #0ff;
+      animation: l30-roll 1s ease-in-out infinite;
+    }
+    @keyframes l30-roll {
+      0%   { transform: translateX(0)     rotate(0deg); }
+      100% { transform: translateX(40px) rotate(360deg); }
+    }
+
+    /************************************************************************
+     * 31) Four corners pulsing in
+     ************************************************************************/
+    .loader-l31 span {
+      position: absolute;
+      width: 8px; height: 8px;
+      background: #fff;
+      animation: l31-pulse 1.2s infinite;
+    }
+    .loader-l31 span:nth-child(1) { top: 0;   left: 0;    animation-delay: 0s;   }
+    .loader-l31 span:nth-child(2) { top: 0;   right: 0;   animation-delay: 0.3s; }
+    .loader-l31 span:nth-child(3) { bottom: 0; left: 0;   animation-delay: 0.6s; }
+    .loader-l31 span:nth-child(4) { bottom: 0; right: 0;  animation-delay: 0.9s; }
+    @keyframes l31-pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.8); }
+    }
+
+    /************************************************************************
+     * 32) Shimmering horizontal bar
+     ************************************************************************/
+    .loader-l32 {
+      width: 64px; height: 16px;
+      background: linear-gradient(to right, #333 0%, #666 50%, #333 100%);
+      background-size: 200% 100%;
+      animation: l32-shimmer 1s linear infinite;
+    }
+    @keyframes l32-shimmer {
+      0%   { background-position: 0 0; }
+      100% { background-position: 100% 0; }
+    }
+
+    /************************************************************************
+     * 33) “Typing” dots (slide up/down)
+     ************************************************************************/
+    .loader-l33 {
+      width: auto;
+      display: inline-flex;
+      gap: 8px;
+      height: 20px;
+      align-items: flex-end;
+    }
+    .loader-l33 span {
+      width: 8px; height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      animation: l33-type 0.7s infinite alternate;
+    }
+    .loader-l33 span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-l33 span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes l33-type {
+      to { transform: translateY(-10px); }
+    }
+
+    /************************************************************************
+     * 34) Morphing circle to square
+     ************************************************************************/
+    .loader-l34 {
+      background: #fff;
+      border-radius: 50%;
+      animation: l34-morph 1.2s infinite alternate ease-in-out;
+    }
+    @keyframes l34-morph {
+      0%   { border-radius: 50%; transform: scale(1); }
+      100% { border-radius: 0%;   transform: scale(1.3); }
+    }
+
+    /************************************************************************
+     * 35) Twisting bar
+     ************************************************************************/
+    .loader-l35 {
+      width: 48px; height: 8px;
+      background: #fff;
+      animation: l35-twist 1s infinite ease-in-out;
+      transform-origin: center center;
+    }
+    @keyframes l35-twist {
+      0%   { transform: rotate(0deg); }
+      50%  { transform: rotate(180deg) scaleY(1.2); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /************************************************************************
+     * 36) Spiral of dots
+     ************************************************************************/
+    .loader-l36 span {
+      position: absolute;
+      top: 32px; left: 32px;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #0af;
+      animation: l36-spiral 2s linear infinite;
+    }
+    .loader-l36 span:nth-child(1)  { animation-delay: 0s;   }
+    .loader-l36 span:nth-child(2)  { animation-delay: 0.1s; }
+    .loader-l36 span:nth-child(3)  { animation-delay: 0.2s; }
+    .loader-l36 span:nth-child(4)  { animation-delay: 0.3s; }
+    .loader-l36 span:nth-child(5)  { animation-delay: 0.4s; }
+    .loader-l36 span:nth-child(6)  { animation-delay: 0.5s; }
+    .loader-l36 span:nth-child(7)  { animation-delay: 0.6s; }
+    .loader-l36 span:nth-child(8)  { animation-delay: 0.7s; }
+    .loader-l36 span:nth-child(9)  { animation-delay: 0.8s; }
+    .loader-l36 span:nth-child(10) { animation-delay: 0.9s; }
+    @keyframes l36-spiral {
+      0%   { transform: rotate(0deg)   translateX(0px); }
+      100% { transform: rotate(360deg) translateX(20px); }
+    }
+
+    /************************************************************************
+     * 37) Zoom in/out ring
+     ************************************************************************/
+    .loader-l37 {
+      border: 4px solid #fff;
+      border-radius: 50%;
+      animation: l37-zoom 1.2s infinite alternate ease-in-out;
+    }
+    @keyframes l37-zoom {
+      0%   { transform: scale(1);   opacity: 1; }
+      100% { transform: scale(0.5); opacity: 0.3; }
+    }
+
+    /************************************************************************
+     * 38) Sliding gradient circle
+     ************************************************************************/
+    .loader-l38 {
+      border-radius: 50%;
+      background: linear-gradient(120deg, #f0f, #0ff);
+      background-size: 200% 200%;
+      animation: l38-slide 1.5s ease-in-out infinite;
+    }
+    @keyframes l38-slide {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /************************************************************************
+     * 39) Rotating star (Removed "top:16px;" so it stays centered)
+     ************************************************************************/
+    .loader-l39 {
+      width: 0; height: 0;
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-bottom: 32px solid #fff;
+      position: relative; /* no vertical offset here */
+      animation: l39-spin 1s linear infinite;
+    }
+    .loader-l39::before {
+      content: "";
+      position: absolute;
+      left: -16px; top: 0;
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-top: 32px solid #fff;
+    }
+    @keyframes l39-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /************************************************************************
+     * 40) “Filling squares” row
+     ************************************************************************/
+    .loader-l40 {
+      width: auto;
+      display: flex;
+      gap: 4px;
+    }
+    .loader-l40 span {
+      width: 8px; height: 8px;
+      background: #fff;
+      animation: l40-fill 1s infinite ease-in-out;
+      opacity: 0;
+    }
+    .loader-l40 span:nth-child(1) { animation-delay: 0.0s; }
+    .loader-l40 span:nth-child(2) { animation-delay: 0.2s; }
+    .loader-l40 span:nth-child(3) { animation-delay: 0.4s; }
+    .loader-l40 span:nth-child(4) { animation-delay: 0.6s; }
+    .loader-l40 span:nth-child(5) { animation-delay: 0.8s; }
+    @keyframes l40-fill {
+      0%, 100% { opacity: 0; }
+      50%      { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
+  <div class="loader-container">
+    <!-- 1) Rotating circle with 8 dots -->
+    <div class="loader loader-l1">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
 
-  <h1>Never-Ending Progress Bars</h1>
-  
-  <!-- Example progress bars -->
-  <div class="progress-bar-container">
-    <div class="progress-bar">
-      <div class="progress-bar-fill"></div>
+    <!-- 2) Simple rotating ring -->
+    <div class="loader loader-l2"></div>
+
+    <!-- 3) Rainbow spinner -->
+    <div class="loader loader-l3"></div>
+
+    <!-- 4) Marquee bar (old XP style) -->
+    <div class="loader loader-l4"></div>
+
+    <!-- 5) Three bouncing dots -->
+    <div class="loader loader-l5">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
-    <div class="progress-bar">
-      <div class="progress-bar-fill"></div>
+
+    <!-- 6) Pulsating dot -->
+    <div class="loader loader-l6"></div>
+
+    <!-- 7) Rotating double arc -->
+    <div class="loader loader-l7"></div>
+
+    <!-- 8) Rotating square -->
+    <div class="loader loader-l8"></div>
+
+    <!-- 9) Two rotating balls -->
+    <div class="loader loader-l9">
+      <span></span>
+      <span></span>
     </div>
-    <div class="progress-bar">
-      <div class="progress-bar-fill"></div>
+
+    <!-- 10) Four-line spinner -->
+    <div class="loader loader-l10">
+      <span></span><span></span><span></span><span></span>
     </div>
-    <!-- You can keep adding more bars -->
+
+    <!-- 11) Wave / equalizer bars -->
+    <div class="loader loader-l11">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- 12) Pulsing ring -->
+    <div class="loader loader-l12"></div>
+
+    <!-- 13) Flipping square -->
+    <div class="loader loader-l13"></div>
+
+    <!-- 14) Dual rotating ring -->
+    <div class="loader loader-l14"></div>
+
+    <!-- 15) Single bar filling/emptying -->
+    <div class="loader loader-l15"></div>
+
+    <!-- 16) Radar-like scanning circle -->
+    <div class="loader loader-l16"></div>
+
+    <!-- 17) Rotating triangle -->
+    <div class="loader loader-l17"></div>
+
+    <!-- 18) 3D rotating cube -->
+    <div class="loader loader-l18"></div>
+
+    <!-- 19) Expanding squares -->
+    <div class="loader loader-l19">
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- 20) Four blinking dots -->
+    <div class="loader loader-l20">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <!-- 21) “Heartbeat” 2-sphere bounce -->
+    <div class="loader loader-l21">
+      <span></span>
+      <span></span>
+    </div>
+
+    <!-- 22) Flickering neon circle -->
+    <div class="loader loader-l22"></div>
+
+    <!-- 23) Clockwise “dot swish” -->
+    <div class="loader loader-l23">
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- 24) Skewing bar -->
+    <div class="loader loader-l24"></div>
+
+    <!-- 25) Spinning border dash -->
+    <div class="loader loader-l25"></div>
+
+    <!-- 26) Loading bar with diagonal stripes -->
+    <div class="loader loader-l26"></div>
+
+    <!-- 27) Spinner with radial bars -->
+    <div class="loader loader-l27">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- 28) Zooming chevron -->
+    <div class="loader loader-l28"></div>
+
+    <!-- 29) Swinging pendulum -->
+    <div class="loader loader-l29"></div>
+
+    <!-- 30) Rolling circle -->
+    <div class="loader loader-l30"></div>
+
+    <!-- 31) Four corners pulsing -->
+    <div class="loader loader-l31">
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- 32) Shimmering horizontal bar -->
+    <div class="loader loader-l32"></div>
+
+    <!-- 33) “Typing” dots -->
+    <div class="loader loader-l33">
+      <span></span><span></span><span></span>
+    </div>
+
+    <!-- 34) Morphing circle to square -->
+    <div class="loader loader-l34"></div>
+
+    <!-- 35) Twisting bar -->
+    <div class="loader loader-l35"></div>
+
+    <!-- 36) Spiral of dots -->
+    <div class="loader loader-l36">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span>
+    </div>
+
+    <!-- 37) Zoom in/out ring -->
+    <div class="loader loader-l37"></div>
+
+    <!-- 38) Sliding gradient circle -->
+    <div class="loader loader-l38"></div>
+
+    <!-- 39) Rotating star (offset removed) -->
+    <div class="loader loader-l39"></div>
+
+    <!-- 40) “Filling squares” row -->
+    <div class="loader loader-l40">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
   </div>
-
 </body>
 </html>
